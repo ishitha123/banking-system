@@ -16,9 +16,10 @@ public class Bank {
         this.name = name;
         accounts = new HashMap<>();
     }
-    public void openAccount(String accountHolderName, BigDecimal initialBalance){
+    public BankAccount openAccount(String accountHolderName, BigDecimal initialBalance){
         BankAccount b = new BankAccount(accountHolderName, initialBalance);
         accounts.put(b.getId(), b);
+        return b;
     }
     public BankAccount findAccountById(int id){
         BankAccount b = accounts.get(id);

@@ -14,9 +14,11 @@ public class BankAccount{
         if(initialBalance.compareTo(BigDecimal.ZERO) < 0){
             throw new IllegalArgumentException("Initial balance cannot be less than 0.");
         }
+        /* 
         if(initialBalance.compareTo(BigDecimal.ZERO) == 0){
             throw new IllegalArgumentException("Initial balance cannot be equal to 0.");
         }
+        */
         this.name = name;
         id = nextId++;
         this.balance = initialBalance;
