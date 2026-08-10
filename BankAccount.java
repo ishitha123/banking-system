@@ -1,36 +1,48 @@
 import java.util.Objects;
+import java.math.BigDecimal;
 
 public class BankAccount{
     private final int id;
     private int nextId = 0;
     private final String name;
-    private double balance = 0;
+    private BigDecimal balance;
 
-    public BankAccount(String name){
+    public BankAccount(String name, BigDecimal initialBalance){
         if(name==null || name.isBlank()){
             throw new IllegalArgumentException("Account holder's name cannot be blank or null.");
         }
+        if(initialBalance.compareTo(BigDecimal.ZERO) < 0){
+            throw new IllegalArgumentException("Initial balance cannot be less than 0.");
+        }
+        if(initialBalance.compareTo(BigDecimal.ZERO) == 0){
+            throw new IllegalArgumentException("Initial balance cannot be equal to 0.");
+        }
         this.name = name;
         id = nextId++;
-        balance = 0;
+        this.balance = initialBalance;
     }
-    public void depositMoney(double amount){
-        if(amount <= 0){
+    public void depositMoney(BigDecimal amount){
+        if(amount.compareTo(BigDecimal.ZERO)==0){
             throw new IllegalArgumentException("Deposit amount must be greater than 0.");
         }
-
-        balance += amount;
+        if(amount.compareTo(BigDecimal.ZERO)<0){
+            throw new IllegalArgumentException("Deposit amount must be greater than 0.");
+        }
+        balance = balance.add(amount);
     }
-    public void withdrawMoney(double amount){
-        if(amount <= 0){
+    public void withdrawMoney(BigDecimal amount){
+        if(amount.compareTo(BigDecimal.ZERO)==0){
             throw new IllegalArgumentException("Withdrawal amount must be greater than 0.");
         }
-        if(amount > balance){
+        if(amount.compareTo(BigDecimal.ZERO)<0){
+            throw new IllegalArgumentException("Withdrawal amount must be greater than 0.");
+        }
+        if(amount.compareTo(balance)<0){
             throw new IllegalStateException("Cannot withdraw more than the account balance.");
         }
-        balance -= amount;
+        balance = balance.subtract(amount);
     }
-    public double getBalance(){
+    public BigDecimal getBalance(){
         return balance;
     }
     public int getId(){
@@ -41,14 +53,14 @@ public class BankAccount{
     }
     @Override
     public boolean equals(Object o){
-        if(this==o){
+        if(o==this){
             return true;
         }
         if(!(o instanceof BankAccount)){
             return false;
         }
         BankAccount b = (BankAccount)o;
-        return b.getId()==this.id;
+        return b.getId() == this.id;
     }
     @Override
     public int hashCode(){
