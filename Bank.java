@@ -3,7 +3,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Bank {
-    private HashMap<Integer, BankAccount> accounts;
+    private final HashMap<Integer, BankAccount> accounts;
     private final int id;
     private static int nextId = 0;
     private final String name;
@@ -36,14 +36,24 @@ public class Bank {
         accounts.remove(id);
     }
     public void transfer(int id1, int id2, BigDecimal amount){
+        if(amount==null){
+            throw new IllegalArgumentException("Cannot transfer a null amount.");
+        }
+        if(amount.compareTo(BigDecimal.ZERO)<=0){
+            throw new IllegalArgumentException("Transfer amount must be greater than 0.");
+        }
         BankAccount b1 = findAccountById(id1);
         BankAccount b2 = findAccountById(id2);
+
         if(b1.equals(b2)){
-            throw new IllegalArgumentException("Cannot transfer money to the same account");
+            throw new IllegalArgumentException("Cannot transfer money to the same account.");
         }
         if(amount.compareTo(b1.getBalance()) > 0){
-            throw new IllegalArgumentException("Cannot transfer more than the source account balance.");
+            throw new IllegalStateException("Cannot transfer more than the source account balance.");
         }
+
+        b1.withdrawMoney(amount);
+        b2.depositMoney(amount);
     }
     private void displayAccount(BankAccount b){
         System.out.println("Account information for account with ID " + b.getId() + ":");
@@ -56,11 +66,12 @@ public class Bank {
             displayAccount(b);
         }
     }
-    public void displayTotalMoney(){
+    public BigDecimal getTotalMoney(){
         BigDecimal sum = BigDecimal.ZERO;
         for(BankAccount b : accounts.values()){
             sum = sum.add(b.getBalance());
         }
+        return sum;
     }
     public int getId(){
         return id;
