@@ -66,6 +66,10 @@ public class Bank {
             displayAccount(b);
         }
     }
+    public int getNumOpenAccounts(){
+        return accounts.size();
+    }
+    
     public BigDecimal getTotalMoney(){
         BigDecimal sum = BigDecimal.ZERO;
         for(BankAccount b : accounts.values()){
